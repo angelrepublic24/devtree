@@ -6,6 +6,7 @@ import * as bcrypt from "bcrypt";
 import { createToken } from "../utils/authentication";
 import * as fs from "fs";
 import cloudinary from "../cloudinary";
+import { v4 as uuid } from 'uuid';
 
 const createAccount = async (req: Request, res: Response) => {
   try {
@@ -72,7 +73,7 @@ const profile = async (req: Request, res: Response) => {
 
 const updateProfile = async (req: Request, res: Response) => {
   try {
-    const { description } = req.body;
+    const { description, links } = req.body;
     const username = slugify(req.body.username, "");
     const usernameExist = await User.findOne({ username: username });
     if (usernameExist && usernameExist.email !== req.user.email) {
@@ -81,6 +82,7 @@ const updateProfile = async (req: Request, res: Response) => {
     }
     req.user.description = description;
     req.user.username = username;
+    req.user.links = links;
 
     await req.user.save();
     res.send({ msg: "Profile updated" });
@@ -92,10 +94,10 @@ const updateProfile = async (req: Request, res: Response) => {
 
 const upload = async (req: Request, res: Response) => {
     const form = formidable({multiples: false});
+  try {
     form.parse(req, (error, fields, files) => {
 
     })
-  try {
     if (!req.file) {
       res.status(400).send({ msg: "File not found" });
       return;
@@ -124,6 +126,7 @@ const upload = async (req: Request, res: Response) => {
     }
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "DevTree",
+      public_id: uuid(),
       use_filename: true,
       unique_filename: true,
     });
@@ -146,10 +149,29 @@ const upload = async (req: Request, res: Response) => {
     })
   }
 };
+
+const getUser = async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username;
+
+    const user = await User.findOne({username}).select('-_id -__v -password -email');
+
+    if(!user) res.status(404).json({message: 'User not found'})
+      res.json({
+    user
+    })
+    
+  } catch (e) {
+    const error =  new Error("Error")
+    res.status(500).json({error: error.message})
+    return
+  }
+}
 export {
     createAccount,
     login,
     profile,
     updateProfile,
-    upload
+    upload,
+    getUser
 };

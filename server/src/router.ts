@@ -1,6 +1,6 @@
 import {Router} from 'express';
 import {body, validationResult} from 'express-validator'
-import { createAccount, login, profile, updateProfile, upload } from './controllers/user.controller';
+import { createAccount, getUser, login, profile, updateProfile, upload } from './controllers/user.controller';
 import { validateLogin, validateProfileForm, validateUserCreation } from './utils/validation';
 import { verifyToken } from './utils/authentication';
 import multer from 'multer';
@@ -30,7 +30,8 @@ router.post('/auth/register', validateUserCreation, handleValidationErrors, crea
 router.post('/auth/login', validateLogin, handleValidationErrors, login)
 router.get('/auth/profile',verifyToken, profile)
 router.patch('/auth/profile' , verifyToken, validateProfileForm, updateProfile)
-router.post('/auth/upload', verifyToken, uploads.single("file0"), upload)
+router.post('/auth/upload', verifyToken, uploads.single("file"), upload)
+router.get('/:username',  getUser)
 
 
 
