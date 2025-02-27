@@ -42,8 +42,15 @@ const validateProfileForm = [
     .notEmpty()
     .withMessage("The description cannot be empty"),
 ]
+
+const validateUsername = [
+  body("username")
+    .notEmpty()
+    .withMessage("The username cannot be empty"),
+]
 export {
     validateUserCreation,
     validateLogin,
-    validateProfileForm
+    validateProfileForm,
+    validateUsername
 };

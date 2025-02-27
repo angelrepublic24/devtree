@@ -7,6 +7,7 @@ import LinkTreeView from "./screen/LinkTreeView";
 import ProfileView from "./screen/ProfileView";
 import UserView from "./screen/UserView";
 import NotFoundView from "./screen/NotFoundView";
+import HomeScreen from "./screen/HomeScreen";
 
 export default function Router(){
     return (
@@ -25,6 +26,8 @@ export default function Router(){
                 <Route path="/:username" element={<AuthLayout/>}>
                     <Route element={<UserView />}  index={true} />
                 </Route>
+
+                <Route path='/' element={<HomeScreen/>}/>
                 <Route path="/404" element={<AuthLayout />}>
                     <Route  element={<NotFoundView/>} index={true}/>
                 </Route>

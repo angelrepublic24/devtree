@@ -48,3 +48,15 @@ export async function getUsername(username: string) {
       throw new Error(error.response.data);
   }
 }
+
+export async function checkAvailable(username: string) {
+  try {
+    const { data } = await Api.post(`/search`, {username});
+    return data;
+  } catch (error) {
+    console.log(error)
+    if (isAxiosError(error) && error.response)
+      throw new Error(error.response.data.error  || "An unexpected error occurred");
+  }
+}
+

@@ -157,10 +157,31 @@ const getUser = async (req: Request, res: Response) => {
     const user = await User.findOne({username}).select('-_id -__v -password -email');
 
     if(!user) res.status(404).json({message: 'User not found'})
-      res.json({
+    res.json({
     user
     })
-    
+    return;
+  } catch (e) {
+    const error =  new Error("Error")
+    res.status(500).json({error: error.message})
+    return
+  }
+}
+
+const searchByUsername = async (req: Request, res: Response) => {
+  try {
+    const {username} = req.body
+    const user = await User.findOne({username});
+    if(user) {
+      const error = new Error(`${username} is not available`);
+      res.status(409).json({
+        error: error.message
+      })
+      return
+    }
+
+    res.send(`${username} is available`);
+    return
   } catch (e) {
     const error =  new Error("Error")
     res.status(500).json({error: error.message})
@@ -173,5 +194,6 @@ export {
     profile,
     updateProfile,
     upload,
-    getUser
+    getUser,
+    searchByUsername
 };

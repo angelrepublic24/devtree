@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {body, validationResult} from 'express-validator'
-import { createAccount, getUser, login, profile, updateProfile, upload } from './controllers/user.controller';
-import { validateLogin, validateProfileForm, validateUserCreation } from './utils/validation';
+import { createAccount, getUser, login, profile, searchByUsername, updateProfile, upload } from './controllers/user.controller';
+import { validateLogin, validateProfileForm, validateUserCreation, validateUsername } from './utils/validation';
 import { verifyToken } from './utils/authentication';
 import multer from 'multer';
 
@@ -32,6 +32,7 @@ router.get('/auth/profile',verifyToken, profile)
 router.patch('/auth/profile' , verifyToken, validateProfileForm, updateProfile)
 router.post('/auth/upload', verifyToken, uploads.single("file"), upload)
 router.get('/:username',  getUser)
+router.post('/search', validateUsername, handleValidationErrors,  searchByUsername)
 
 
 

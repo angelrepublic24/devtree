@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { LoginForm } from "../types";
 import ErrorMessage from "../components/ErrorMessage";
@@ -12,6 +12,7 @@ export default function LoginScreen() {
     password: "",
   };
 
+  const navigation = useNavigate();
   const {
     register,
     handleSubmit,
@@ -23,8 +24,8 @@ export default function LoginScreen() {
     try{
       const {data} = await Api.post('/auth/login', formData);
       localStorage.setItem('AUTH_TOKEN', data.token);
-      console.log(data)
-      toast.success(data.msg)
+      navigation('/admin')
+
     }catch(error){
       if(isAxiosError(error)){
         console.log(error)
